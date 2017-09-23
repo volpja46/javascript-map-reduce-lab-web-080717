@@ -1,3 +1,4 @@
+
 const issues = [
   {
     "body": "Instructions say GET /team and POST /newteam. Rspec wants GET/newteam and POST/team.",
@@ -9000,3 +9001,86 @@ const issues = [
     "url": "https://api.github.com/repos/learn-co-curriculum/js-donut-lab/issues/2"
   }
 ];
+
+
+let issuesWithUpdatedApiUrl = issues
+.map(issue => {
+  let newUrl = issue.url.replace("api.github.com", 'api-v2.github.com')
+    return Object.assign({}, issue, {url:newUrl})
+  }
+)
+let commentCountAcrossIssues = issues.reduce((totalComments, issue) => {
+      return totalComments += issue.comments_count
+}, 0)
+
+let openIssues = issues
+.reduce((openIssues, issue) => {
+  if (issue.state === "open"){
+    return [...openIssues, issue];
+  }
+  return openIssues;
+}, []);
+
+
+let nonAutomaticIssues = issues
+.reduce((totalIssues, issue) => {
+  var automaticIssues = issue.body.includes("This pull request has been automatically created by learn.co.");
+  if (!automaticIssues){
+    totalIssues.push(issue);
+  }
+    return totalIssues;
+  }, []);
+
+  const $tbody = document.getElementById('results');
+  $tbody.innerHTML = nonAutomaticIssues
+    .map(issue => `<tr>
+      <td>${issue.body}</td>
+      <td>${issue.created_at}</td>
+      <td>${issue.state}</td>
+      </tr>`
+    )
+    .join('');
+//
+//   describe("Showing off", function () {
+//     it('should add the appropriate amount of table rows to the HTML', function () {
+//       const $ = typeof cheerio !== 'undefined' ? cheerio.load(document.body.innerHTML) : jQuery;
+//       const $rows = $('#results > tr');
+//       expect($rows.length).toBeGreaterThan(0);
+//       expect($rows.length).toEqual(nonAutomaticIssues.length);
+//     });
+//   });
+// });
+//
+//
+// describe("I'm not a robot", function () {
+//   it('should have a `nonAutomaticIssues` array', function () {
+//     expect(nonAutomaticIssues).toBeAn('array');
+//     expect(nonAutomaticIssues.length).toBeGreaterThan(0);
+//   });
+//
+//   it('should only contain issues that are not created automatically', function () {
+//     const hasPassed = nonAutomaticIssues.every(issue => !issue.body.includes('automatically created by learn.co'));
+//     expect(hasPassed).toBeTruthy('The `nonAutomaticIssues` array contains issues that were automatically created.');
+//   });
+// });
+//
+// describe("Showing off", function () {
+//   it('should add the appropriate amount of table rows to the HTML', function () {
+//     const $ = typeof cheerio !== 'undefined' ? cheerio.load(document.body.innerHTML) : jQuery;
+//     const $rows = $('#results > tr');
+//     expect($rows.length).toBeGreaterThan(0);
+//     expect($rows.length).toEqual(nonAutomaticIssues.length);
+//   });
+// });
+// });
+
+  // describe('Filtering for open arrays', function () {
+  //   it('should have an `openIssues` array', function () {
+  //     expect(openIssues).toBeAn('array');
+  //   });
+  //
+  //   it('should only contain open issues', function () {
+  //     const hasPassed = openIssues.every(issue => issue.state === 'open');
+  //     expect(hasPassed).toBeTruthy('The `openIssues` array contains issues that are not open.');
+  //   });
+  // });
